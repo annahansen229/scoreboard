@@ -5,7 +5,6 @@ import com.carolinarollergirls.scoreboard.core.interfaces.Official;
 import com.carolinarollergirls.scoreboard.core.interfaces.OfficialPosition;
 import com.carolinarollergirls.scoreboard.core.interfaces.Penalty;
 import com.carolinarollergirls.scoreboard.core.interfaces.Team;
-import com.carolinarollergirls.scoreboard.event.Command;
 import com.carolinarollergirls.scoreboard.event.ScoreBoardEventProviderImpl;
 import com.carolinarollergirls.scoreboard.event.Value;
 
@@ -62,9 +61,7 @@ public final class OfficialPositionImpl
             }
         }
         if (prop == REMOVABLE) {
-            if ("IPRF".equals(subId) || "IPRR".equals(subId) || "JR1".equals(subId) || "JR2".equals(subId) ||
-                "OPRR".equals(subId) || "OPRM".equals(subId) || "OPRF".equals(subId) || "PBM".equals(subId) ||
-                "JT".equals(subId)) {
+            if (Game.DEFAULT_CALLED_BY_POSITIONS.contains(subId)) {
                 // Frontend expects these to always be present
                 return false;
             }
@@ -80,13 +77,6 @@ public final class OfficialPositionImpl
             for (Penalty p : getAll(PENALTIES)) {
                 if (p.get(Penalty.CALLING_OFFICIAL) == null) { p.set(Penalty.CALLING_OFFICIAL, o); }
             }
-        }
-    }
-
-    @Override
-    public void execute(Command prop, Source source) {
-        if (prop == REMOVE) {
-            if (get(REMOVABLE)) { delete(); }
         }
     }
 
