@@ -369,10 +369,14 @@ function pltToggleReassign(k, v, elem) {
   elem.toggleClass('sbActive', elem.closest('.CalledBy').hasClass('Reassign'));
 }
 
-function pltFilterOfficial(k, v, elem) {
-  const targetPosition = elem.parent().parent().attr('OfficialPosition');
-  const officialsPosition = v.match(/\p{Lu}/gu).join();
-  return targetPosition.startsWith(officialsPosition);
+function pltToOfficialOptionLabel(k) {
+  const positionPath = k.substring(0, k.lastIndexOf('.'));
+  const positionName = WS.state[positionPath + '.Name'];
+  const officialName = WS.state[positionPath + '.CurrentOfficialName'];
+  if (positionName && officialName) {
+    return positionName + ': ' + officialName;
+  }
+  return positionName || officialName || '';
 }
 
 //###################################################################
