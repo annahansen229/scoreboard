@@ -51,7 +51,15 @@
       </div>
       <div class="sbSegment">
         <div class="sbGroup sbHeader">Screen Settings</div>
-        <div class="sbGroup"><button id="OptionCallers" sbCall="setCallers">Track "Called By"</button></div>
+        <div class="sbGroup">
+          <button
+            id="OptionCallers"
+            sbClass="sbHide: /ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy): !"
+            sbCall="setCallers"
+          >
+            Track "Called By"
+          </button>
+        </div>
         <div class="sbGroup"><button id="OptionNonSkaters" sbCall="setNonSkaters">Show Non-Skaters</button></div>
         <div class="sbGroup"><button id="OptionHideCopy" sbCall="setHideCopy">Hide Copy Buttons</button></div>
         <div class="sbGroup"><button id="OptionSwapTeams" sbCall="setSwapTeams">SwapTeams</button></div>
@@ -60,6 +68,13 @@
       <div class="sbSegment">
         <div class="sbGroup sbHeader">CRG Settings</div>
         <div class="sbGroup"><button sbToggle="$">Enable Lineup Tracking</button></div>
+        <div class="sbGroup">
+          <button
+            sbToggle="/ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy)"
+          >
+            Enable &quot;Called By&quot; Tracking
+          </button>
+        </div>
         <div class="sbGroup">
           <button sbToggle="/ScoreBoard.Settings.Setting(ScoreBoard.Penalties.UsePBT)">Enable Penalty Box Timing</button>
         </div>
@@ -70,5 +85,6 @@
     </div>
 
     <div id="UseLTDialog">Use of Lineup Tracking is disabled.</div>
+    <div sbInclude="/components/called-by-settings/"></div>
   </body>
 </html>

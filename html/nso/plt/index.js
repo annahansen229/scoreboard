@@ -1,18 +1,20 @@
 WS.AfterLoad(function () {
   _windowFunctions.configureZoom();
+  const trackCalledBy = isTrue(WS.state['ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy)']);
+  const showCalledBy = _windowFunctions.hasParam('callers') ? _windowFunctions.checkParam('callers', '1') : true;
   $('body')
     .attr('showTeam', _windowFunctions.getParam('team') || 'both')
     .attr('sbSheetStyle', _windowFunctions.getParam('pos') || 'plt')
     .attr('nextButton', _windowFunctions.getParam('next') || 'both')
     .attr('showNonSkaters', _windowFunctions.checkParam('nonskaters', '1') || null)
-    .attr('calledBy', _windowFunctions.checkParam('callers', '1') || null)
+    .attr('calledBy', trackCalledBy && showCalledBy || null)
     .attr('hideCopy', _windowFunctions.checkParam('hideCopy', '1') || null)
     .attr('swapTeams', _windowFunctions.checkParam('swapTeams', '1') || null);
   updateColspan();
 
   $('#OptionsDialog #OptionZoomable').toggleClass('sbActive', _windowFunctions.checkParam('zoomable', '1')).button();
   $('#OptionsDialog #OptionNonSkaters').toggleClass('sbActive', _windowFunctions.checkParam('nonskaters', '1')).button();
-  $('#OptionsDialog #OptionCallers').toggleClass('sbActive', _windowFunctions.checkParam('callers', '1')).button();
+  $('#OptionsDialog #OptionCallers').toggleClass('sbActive', $('body').is('[calledBy]')).button();
   $('#OptionsDialog #OptionHideCopy').toggleClass('sbActive', _windowFunctions.checkParam('hideCopy', '1')).button();
   $('#OptionsDialog #OptionSwapTeams').toggleClass('sbActive', _windowFunctions.checkParam('swapTeams', '1')).button();
   $('#OptionsDialog [team="' + _windowFunctions.getParam('team') + '"]').addClass('sbActive');
@@ -46,6 +48,11 @@ WS.AfterLoad(function () {
   });
   WS.Register(['ScoreBoard.Settings.Setting(ScoreBoard.Penalties.UseLT)'], function (k, v) {
     $('#UseLTDialog').dialog(!isTrue(v) && $('body[sbSheetStyle*="lt"]').length ? 'open' : 'close');
+  });
+  WS.Register(['ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy)'], function (k, v) {
+    const enabled = isTrue(v) && (_windowFunctions.hasParam('callers') ? _windowFunctions.checkParam('callers', '1') : true);
+    $('body').attr('calledBy', enabled || null);
+    $('#OptionsDialog #OptionCallers').toggleClass('sbActive', enabled);
   });
 });
 

@@ -1,0 +1,7 @@
+#CalledByTrackingDialog table.Officials { width: 100%; font-size: 1.1em; }
+#CalledByTrackingDialog table.Officials col.Position { width: 60%; }
+#CalledByTrackingDialog table.Officials col.Display { width: 40%; }
+#CalledByTrackingDialog table.Officials th,
+#CalledByTrackingDialog table.Officials td { padding: 0.25em 0.5em; }
+#CalledByTrackingDialog table.Officials td:last-child { text-align: center; }
+#CalledByTrackingDialog input.PositionOption { width: 1.2em; height: 1.2em; vertical-align: middle; }

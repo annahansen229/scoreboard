@@ -61,6 +61,8 @@ public interface ScoreBoard extends ScoreBoardEventProvider {
     public static final String SETTING_AUTO_END_JAM = "ScoreBoard.AutoEndJam";
     public static final String SETTING_AUTO_END_TTO = "ScoreBoard.AutoEndTTO";
     public static final String SETTING_USE_LT = "ScoreBoard.Penalties.UseLT";
+    public static final String SETTING_TRACK_CALLED_BY = "ScoreBoard.Penalties.TrackCalledBy";
+    public static final String SETTING_TRACK_CALLED_BY_POSITIONS = SETTING_TRACK_CALLED_BY + ".Positions";
     public static final String SETTING_USE_PBT = "ScoreBoard.Penalties.UsePBT";
     public static final String SETTING_HIDE_LINEUPS = "ScoreBoard.HideLineups";
     public static final String SETTING_STATSBOOK_INPUT = "ScoreBoard.Stats.InputFile";

@@ -369,10 +369,8 @@ function pltToggleReassign(k, v, elem) {
   elem.toggleClass('sbActive', elem.closest('.CalledBy').hasClass('Reassign'));
 }
 
-function pltFilterOfficial(k, v, elem) {
-  const targetPosition = elem.parent().parent().attr('OfficialPosition');
-  const officialsPosition = v.match(/\p{Lu}/gu).join();
-  return targetPosition.startsWith(officialsPosition);
+function pltIsCalledByPositionDisabled(k, v, elem) {
+  return v != null && !v.split(',').includes(elem.attr('OfficialPosition'));
 }
 
 //###################################################################

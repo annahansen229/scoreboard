@@ -301,8 +301,8 @@
       <div
         class="sbGroup sbStack OfficialPosition"
         sbContext="^^^"
-        sbForeach="OfficialPosition:IPRR,IPRF,JR1,JR2,OPRF,OPRM,OPRR,PBM,JT"
-        sbClass="HasOfficial: CurrentOfficial: sbIsNotEmpty | sbActive: p.CallingPosition: == k.Game + '_' + elem.attr('OfficialPosition')"
+        sbForeach="OfficialPosition:: name: resort=Name"
+        sbClass="sbHide: /ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy.Positions): pltIsCalledByPositionDisabled | HasOfficial: CurrentOfficial: sbIsNotEmpty | sbActive: p.CallingPosition: == k.Game + '_' + elem.attr('OfficialPosition')"
         sbSet="p.CallingPosition: k.Game + '_' + elem.attr('OfficialPosition')"
       >
         <span sbDisplay="Name"></span>
@@ -312,7 +312,6 @@
           <option sbContext="^" sbForeach="Ref" sbAttr="value: Id" sbDisplay="Name" sbClass="Filter: CurrentPosition: sbIsNotEmpty"></option>
           <option sbContext="^" sbForeach="Nso" sbAttr="value: Id" sbDisplay="Name" sbClass="Filter: CurrentPosition: sbIsNotEmpty"></option>
         </select>
-        <button class="OnEdit" sbClass="sbHide: Removable: !" sbSet="Remove">Remove Position</button>
       </div>
     </div>
   </div>

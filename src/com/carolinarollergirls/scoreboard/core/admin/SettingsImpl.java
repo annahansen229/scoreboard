@@ -57,6 +57,8 @@ public final class SettingsImpl extends ScoreBoardEventProviderImpl<Settings> im
         set("ScoreBoard.Operator_Default.AutoEndJam", "false");
         set("ScoreBoard.Operator_Default.AutoEndTTO", "true");
         set(ScoreBoard.SETTING_USE_LT, "false");
+        set(ScoreBoard.SETTING_TRACK_CALLED_BY, "false");
+        set(ScoreBoard.SETTING_TRACK_CALLED_BY_POSITIONS, "IPRF,IPRR,JR1,JR2,OPRF,OPRM,OPRR,PLT1,PLT2,PW,PBM");
         set(ScoreBoard.SETTING_USE_PBT, "false");
         set(ScoreBoard.SETTING_HIDE_LINEUPS, "false");
         set(ScoreBoard.SETTING_STATSBOOK_INPUT, "");
