@@ -5,7 +5,6 @@ import com.carolinarollergirls.scoreboard.core.interfaces.Official;
 import com.carolinarollergirls.scoreboard.core.interfaces.OfficialPosition;
 import com.carolinarollergirls.scoreboard.core.interfaces.Penalty;
 import com.carolinarollergirls.scoreboard.core.interfaces.Team;
-import com.carolinarollergirls.scoreboard.event.Command;
 import com.carolinarollergirls.scoreboard.event.ScoreBoardEventProviderImpl;
 import com.carolinarollergirls.scoreboard.event.Value;
 
@@ -22,11 +21,9 @@ public final class OfficialPositionImpl
         setRecalculated(NAME)
             .addIndirectSource(this, TEAM, Team.UNIFORM_COLOR)
             .addIndirectSource(this, TEAM, Team.DISPLAY_NAME);
-        setRecalculated(REMOVABLE).addSource(this, PENALTIES).addSource(this, CURRENT_OFFICIAL);
         if (id.endsWith(Team.ID_1)) { set(TEAM, game.getTeam(Team.ID_1)); }
         if (id.endsWith(Team.ID_2)) { set(TEAM, game.getTeam(Team.ID_2)); }
         set(NAME, id);
-        set(REMOVABLE, true);
     }
 
     @Override
@@ -61,15 +58,6 @@ public final class OfficialPositionImpl
                 return subId;
             }
         }
-        if (prop == REMOVABLE) {
-            if ("IPRF".equals(subId) || "IPRR".equals(subId) || "JR1".equals(subId) || "JR2".equals(subId) ||
-                "OPRR".equals(subId) || "OPRM".equals(subId) || "OPRF".equals(subId) || "PBM".equals(subId) ||
-                "JT".equals(subId)) {
-                // Frontend expects these to always be present
-                return false;
-            }
-            return getAll(PENALTIES).isEmpty() && get(CURRENT_OFFICIAL) == null;
-        }
         return value;
     }
 
@@ -80,13 +68,6 @@ public final class OfficialPositionImpl
             for (Penalty p : getAll(PENALTIES)) {
                 if (p.get(Penalty.CALLING_OFFICIAL) == null) { p.set(Penalty.CALLING_OFFICIAL, o); }
             }
-        }
-    }
-
-    @Override
-    public void execute(Command prop, Source source) {
-        if (prop == REMOVE) {
-            if (get(REMOVABLE)) { delete(); }
         }
     }
 

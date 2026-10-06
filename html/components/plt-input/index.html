@@ -301,7 +301,7 @@
       <div
         class="sbGroup sbStack OfficialPosition"
         sbContext="^^^"
-        sbForeach="OfficialPosition:IPRR,IPRF,JR1,JR2,OPRF,OPRM,OPRR,PBM,JT"
+        sbForeach="OfficialPosition: IPRF,IPRR,JR1,JR2,OPRF,OPRM,OPRR,PLT1,PLT2,PBM: only"
         sbClass="HasOfficial: CurrentOfficial: sbIsNotEmpty | sbActive: p.CallingPosition: == k.Game + '_' + elem.attr('OfficialPosition')"
         sbSet="p.CallingPosition: k.Game + '_' + elem.attr('OfficialPosition')"
       >
@@ -312,7 +312,13 @@
           <option sbContext="^" sbForeach="Ref" sbAttr="value: Id" sbDisplay="Name" sbClass="Filter: CurrentPosition: sbIsNotEmpty"></option>
           <option sbContext="^" sbForeach="Nso" sbAttr="value: Id" sbDisplay="Name" sbClass="Filter: CurrentPosition: sbIsNotEmpty"></option>
         </select>
-        <button class="OnEdit" sbClass="sbHide: Removable: !" sbSet="Remove">Remove Position</button>
+      </div>
+      <div class="sbGroup sbStack OfficialPosition" sbContext="^^^">
+        <span>Other</span>
+        <select sbControl="p.CallingPosition">
+          <option value=""></option>
+          <option sbForeach="OfficialPosition" sbAttr="value: Id" sbProp="textContent: Name, CurrentOfficialName: pltToOfficialOptionLabel"></option>
+        </select>
       </div>
     </div>
   </div>

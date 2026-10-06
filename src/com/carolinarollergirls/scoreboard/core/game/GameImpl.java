@@ -112,15 +112,10 @@ public final class GameImpl extends ScoreBoardEventProviderImpl<Game> implements
         add(CLOCK, new ClockImpl(this, Clock.ID_LINEUP));
         add(CLOCK, new ClockImpl(this, Clock.ID_TIMEOUT));
         add(CLOCK, new ClockImpl(this, Clock.ID_INTERMISSION));
-        getOfficialPosition("IPRF");
-        getOfficialPosition("IPRR");
-        getOfficialPosition("JR1");
-        getOfficialPosition("JR2");
-        getOfficialPosition("OPRF");
-        getOfficialPosition("OPRM");
-        getOfficialPosition("OPRR");
-        getOfficialPosition("PBM");
-        getOfficialPosition("JT");
+        String[] defaultCalledByPositions = {"IPRF", "IPRR", "JR1", "JR2", "OPRF", "OPRM", "OPRR", "PLT1", "PLT2", "PBM"};
+        for (String position : defaultCalledByPositions) {
+            getOfficialPosition(position);
+        }
         addWriteProtection(CLOCK);
         addWriteProtectionOverride(EXPULSION, Source.NON_WS);
         addWriteProtectionOverride(IN_JAM, Source.NON_WS);

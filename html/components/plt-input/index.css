@@ -86,6 +86,7 @@ body:not([calledBy]) .CalledBy { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition.HasOfficial .OnEdit { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition:not(.HasOfficial) .OnNoEdit { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .Filter { display: none; }
-#PenaltyEditor .CallledBy.Reassign .OnNoEdit { display: none; }
+#PenaltyEditor .CalledBy.Reassign .OnNoEdit { display: none; }
+#PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition .OnEdit { display: none; }
 
 #AnnotationEditor .sbGroup { flex-wrap: wrap; gap: 0.5em; }
