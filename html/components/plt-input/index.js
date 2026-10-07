@@ -374,6 +374,16 @@ function pltToggleCallingPosition(k, v, elem) {
   return WS.state[k] === position ? null : position;
 }
 
+function pltToCallingByDisplay(k) {
+  const penaltyPath = k.upTo('Penalty');
+  const positionName = WS.state[penaltyPath + '.CallingPositionName'];
+  const officialName = WS.state[penaltyPath + '.CallingOfficialName'];
+  if (positionName && officialName) {
+    return positionName + ' : ' + officialName;
+  }
+  return positionName || officialName || '';
+}
+
 function pltIsCalledByPositionDisabled(k, v, elem) {
   return v != null && !v.split(',').includes(elem.attr('OfficialPosition'));
 }

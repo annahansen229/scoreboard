@@ -81,6 +81,7 @@ body[calledBy] .PltInput>.Team .Set.NoOfficial::after { position: absolute; left
 #PenaltyEditor .Codes>div .Description { font-size: 0.75em; } 
 
 body:not([calledBy]) .CalledBy { display: none; }
+body[calledBy] .CalledByFallback { display: none; }
 #PenaltyEditor .CalledBy { max-height: 90dvh; width: 400px; overflow: scroll; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition.HasOfficial .OnEdit { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition.HasOfficial .OnEdit { display: none; }

@@ -3,6 +3,7 @@ package com.carolinarollergirls.scoreboard.core.game;
 import com.carolinarollergirls.scoreboard.core.interfaces.BoxTrip;
 import com.carolinarollergirls.scoreboard.core.interfaces.Game;
 import com.carolinarollergirls.scoreboard.core.interfaces.Jam;
+import com.carolinarollergirls.scoreboard.core.interfaces.Official;
 import com.carolinarollergirls.scoreboard.core.interfaces.OfficialPosition;
 import com.carolinarollergirls.scoreboard.core.interfaces.Penalty;
 import com.carolinarollergirls.scoreboard.core.interfaces.ScoreBoard;
@@ -23,6 +24,8 @@ public final class PenaltyImpl extends NumberedScoreBoardEventProviderImpl<Penal
         setInverseReference(JAM, Jam.PENALTY);
         setInverseReference(BOX_TRIP, BoxTrip.PENALTY);
         setInverseReference(CALLING_POSITION, OfficialPosition.PENALTIES);
+        setCopy(CALLING_POSITION_NAME, this, CALLING_POSITION, OfficialPosition.NAME, true);
+        setCopy(CALLING_OFFICIAL_NAME, this, CALLING_OFFICIAL, Official.NAME, true);
         addWriteProtectionOverride(TIME, Source.ANY_FILE);
         setRecalculated(SERVED).addSource(this, BOX_TRIP).addSource(this, FORCE_SERVED);
         setCopy(SERVING, this, BOX_TRIP, BoxTrip.IS_CURRENT, true);
