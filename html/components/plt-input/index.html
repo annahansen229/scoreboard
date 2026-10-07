@@ -303,7 +303,7 @@
         sbContext="^^^"
         sbForeach="OfficialPosition:: name: resort=Name"
         sbClass="sbHide: /ScoreBoard.Settings.Setting(ScoreBoard.Penalties.TrackCalledBy.Positions): pltIsCalledByPositionDisabled | HasOfficial: CurrentOfficial: sbIsNotEmpty | sbActive: p.CallingPosition: == k.Game + '_' + elem.attr('OfficialPosition')"
-        sbSet="p.CallingPosition: k.Game + '_' + elem.attr('OfficialPosition')"
+        sbSet="p.CallingPosition: pltToggleCallingPosition"
       >
         <span sbDisplay="Name"></span>
         <span class="OnNoEdit" sbDisplay="CurrentOfficialName"></span>

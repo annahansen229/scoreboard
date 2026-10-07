@@ -369,6 +369,11 @@ function pltToggleReassign(k, v, elem) {
   elem.toggleClass('sbActive', elem.closest('.CalledBy').hasClass('Reassign'));
 }
 
+function pltToggleCallingPosition(k, v, elem) {
+  const position = k.Game + '_' + elem.attr('OfficialPosition');
+  return WS.state[k] === position ? null : position;
+}
+
 function pltIsCalledByPositionDisabled(k, v, elem) {
   return v != null && !v.split(',').includes(elem.attr('OfficialPosition'));
 }
