@@ -17,6 +17,9 @@ import com.carolinarollergirls.scoreboard.core.interfaces.Team;
 import com.carolinarollergirls.scoreboard.core.prepared.PreparedOfficialImpl;
 import com.carolinarollergirls.scoreboard.event.Child;
 import com.carolinarollergirls.scoreboard.event.Command;
+import com.carolinarollergirls.scoreboard.event.ConditionalScoreBoardListener;
+import com.carolinarollergirls.scoreboard.event.ScoreBoardEvent;
+import com.carolinarollergirls.scoreboard.event.ScoreBoardListener;
 import com.carolinarollergirls.scoreboard.event.ScoreBoardEventProviderImpl;
 import com.carolinarollergirls.scoreboard.event.Value;
 
@@ -27,6 +30,13 @@ public final class OfficialImpl extends ScoreBoardEventProviderImpl<Official> im
         addProperties(props);
         addProperties(preparedProps);
         setInverseReference(CURRENT_POSITION, OfficialPosition.CURRENT_OFFICIAL);
+        game.addScoreBoardListener(new ConditionalScoreBoardListener<>(game, Game.CURRENT_PERIOD_NUMBER,
+            new ScoreBoardListener() {
+                @Override
+                public void scoreBoardChange(ScoreBoardEvent<?> event) {
+                    if (ROLE_JR.equals(get(ROLE))) { updateJammerRefPosition(); }
+                }
+            }));
     }
     public OfficialImpl(Game g, Official source) {
         this(g, UUID.randomUUID().toString(), source.getType());
@@ -151,6 +161,13 @@ public final class OfficialImpl extends ScoreBoardEventProviderImpl<Official> im
                 set(P1_TEAM, team);
             }
         }
+    }
+
+    private void updateJammerRefPosition() {
+        Team p1Team = get(P1_TEAM);
+        if (p1Team == null) { return; }
+        Team currentTeam = get(SWAP) && game.getCurrentPeriodNumber() == 2 ? p1Team.getOtherTeam() : p1Team;
+        set(CURRENT_POSITION, game.getOfficialPosition("JR" + currentTeam.getProviderId()));
     }
 
     @Override

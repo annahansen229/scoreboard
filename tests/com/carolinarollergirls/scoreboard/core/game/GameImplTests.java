@@ -22,6 +22,7 @@ import com.carolinarollergirls.scoreboard.core.interfaces.CurrentGame;
 import com.carolinarollergirls.scoreboard.core.interfaces.FloorPosition;
 import com.carolinarollergirls.scoreboard.core.interfaces.Game;
 import com.carolinarollergirls.scoreboard.core.interfaces.Jam;
+import com.carolinarollergirls.scoreboard.core.interfaces.Official;
 import com.carolinarollergirls.scoreboard.core.interfaces.Penalty;
 import com.carolinarollergirls.scoreboard.core.interfaces.Period;
 import com.carolinarollergirls.scoreboard.core.interfaces.Role;
@@ -1997,6 +1998,23 @@ public class GameImplTests {
         g.startJam();
         advance(1000);
         assertEquals(2, p.numberOf(Period.JAM));
+    }
+
+    @Test
+    public void testJammerRefSwapsPenaltyTrackingPositionAtHalftime() {
+        OfficialImpl jammerRef = new OfficialImpl(g, "jammer-ref", Game.REF);
+        g.add(Game.REF, jammerRef);
+        jammerRef.set(Official.ROLE, Official.ROLE_JR);
+        jammerRef.set(Official.P1_TEAM, g.getTeam(Team.ID_1));
+
+        assertEquals("JR1", jammerRef.get(Official.CURRENT_POSITION).getProviderId());
+        fastForwardPeriod();
+        fastForwardPeriod();
+
+        assertEquals(2, g.getCurrentPeriodNumber());
+        assertTrue(jammerRef.get(Official.SWAP));
+        assertEquals("JR2", jammerRef.get(Official.CURRENT_POSITION).getProviderId());
+        assertEquals(Team.ID_1, jammerRef.get(Official.P1_TEAM).getProviderId());
     }
 
     @Test
