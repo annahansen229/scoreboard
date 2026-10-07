@@ -88,5 +88,17 @@ body:not([calledBy]) .CalledBy { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .Filter { display: none; }
 #PenaltyEditor .CalledBy.Reassign .OnNoEdit { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition .OnEdit { display: none; }
+body[calledBy] .CalledByReadOnly { display: none; }
+/* match spacing/alignment with Comment display */
+#PenaltyEditor .CalledByReadOnly .CalledByText {
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: left;
+  width: 370px;
+  padding: 1px 2px;
+  font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 #AnnotationEditor .sbGroup { flex-wrap: wrap; gap: 0.5em; }

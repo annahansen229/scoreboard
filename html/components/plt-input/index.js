@@ -389,6 +389,24 @@ function pltToggleCallingPosition(k, v, elem, event) {
   return WS.state[k] === position ? null : position;
 }
 
+function pltToCalledByDisplay(k) {
+  const penaltyPath = k.upTo('Penalty');
+  const gamePath = k.upTo('Game');
+
+  const positionID = WS.state[penaltyPath + '.CallingPosition'];
+  const positionShortName = positionID ? positionID.split('_').pop() : '';
+  const positionName = positionShortName ? WS.state[gamePath + '.OfficialPosition(' + positionShortName + ').Name'] : '';
+
+  const officialId = WS.state[penaltyPath + '.CallingOfficial'];
+  const officialName = officialId
+    ? WS.state[gamePath + '.Nso(' + officialId + ').Name'] || WS.state[gamePath + '.Ref(' + officialId + ').Name']
+    : '';
+  if (positionName && officialName) {
+    return positionName + ' : ' + officialName;
+  }
+  return positionName || officialName || '';
+}
+
 
 //###################################################################
 //
