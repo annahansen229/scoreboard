@@ -73,6 +73,11 @@ body[calledBy] .PltInput>.Team .Set.NoOfficial::after { position: absolute; left
 .PltInput>.Team .Code .Unserved::before { content: "!"; } 
 .PltInput>.Team .Code .Serving::before { content: "\203E" /* overline */; } 
 
+/* Enlarge the dialog titlebar and "x" close button for easier use on touch screens */
+.ui-dialog-titlebar.ui-dialog-titlebar.ui-dialog-titlebar { padding: 0.8em 2em; }
+.ui-dialog-titlebar-close.ui-dialog-titlebar-close.ui-dialog-titlebar-close { width: 40px; height: 40px; margin: -20px 0 0 0; padding: 2px; }
+.ui-dialog-titlebar-close.ui-dialog-titlebar-close .ui-icon { width: 32px; height: 32px; margin-top: -16px; margin-left: -16px; background-size: 512px 480px; background-position: -192px -256px; }
+
 #PenaltyEditor { display: flex; }
 #PenaltyEditor .Codes { flex-wrap: wrap; gap: 0.5em; }
 #PenaltyEditor .Codes>div { width: 150px; height: 90px; border: 1px solid black; font-weight: bold; background-color: #fff; } 

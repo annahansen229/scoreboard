@@ -389,6 +389,29 @@ function pltToggleCallingPosition(k, v, elem, event) {
   return WS.state[k] === position ? null : position;
 }
 
+function _pltPenaltyPathFromElem(elem) {
+  return elem.closest('#PenaltyEditor').attr('sbContext').replace(/^\//, '');
+}
+
+function pltCloseDialogOnPenaltySelection(k, v, elem, event) {
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  if (!$('body').is('[calledBy]') || WS.state[penaltyPath + '.CallingPosition']) {
+    sbCloseDialog(k, v, elem, event);
+  }
+}
+
+function pltCloseDialogOnPositionSelection(k, v, elem, event) {
+  // Ignore clicks inside .OnEdit (propagated from position editing controls) and keep the current value
+  if (event && $(event.target).closest('.OnEdit').length) {
+    return;
+  }
+  
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  if (WS.state[penaltyPath + '.Code']) {
+    sbCloseDialog(k, v, elem, event);
+  }
+}
+
 function pltToCalledByDisplay(k) {
   const penaltyPath = k.upTo('Penalty');
   const gamePath = k.upTo('Game');
