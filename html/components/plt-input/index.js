@@ -374,6 +374,24 @@ function pltToggleCallingPosition(k, v, elem) {
   return WS.state[k] === position ? null : position;
 }
 
+function _pltPenaltyPathFromElem(elem) {
+  return elem.closest('#PenaltyEditor').attr('sbContext').replace(/^\//, '');
+}
+
+function pltCloseDialogOnCode(k, v, elem, event) {
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  if (!$('body').is('[calledBy]') || WS.state[penaltyPath + '.CallingPosition']) {
+    sbCloseDialog(k, v, elem, event);
+  }
+}
+
+function pltCloseDialogOnCallingPosition(k, v, elem, event) {
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  if (WS.state[penaltyPath + '.Code']) {
+    sbCloseDialog(k, v, elem, event);
+  }
+}
+
 function pltToCallingByDisplay(k) {
   const penaltyPath = k.upTo('Penalty');
   const positionName = WS.state[penaltyPath + '.CallingPositionName'];
