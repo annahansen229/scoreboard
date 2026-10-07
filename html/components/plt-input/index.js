@@ -379,6 +379,17 @@ function pltToOfficialOptionLabel(k) {
   return positionName || officialName || '';
 }
 
+function pltToggleCallingPosition(k, v, elem, event) {
+  // Ignore clicks inside .OnEdit (propagated from position editing controls) and keep the current value
+  if (event && $(event.target).closest('.OnEdit').length) {
+    return WS.state[k];
+  }
+
+  const position = k.Game + '_' + elem.attr('OfficialPosition');
+  return WS.state[k] === position ? null : position;
+}
+
+
 //###################################################################
 //
 //  LT Annotation Editor
