@@ -1,7 +1,5 @@
 # Contributing to CRG ScoreBoard
 
-
-
 CRG Scoreboard is created by the community, and welcomes contributions of all kinds. Some areas that we especially appreciate contributions in are:
 
 - improvements to the wiki pages
@@ -9,11 +7,9 @@ CRG Scoreboard is created by the community, and welcomes contributions of all ki
 - testing
 - new or improved technical documentation
 
-
 ## Contributing to the wiki
 
 Anyone can add to the scoreboard wiki pages, so if you see an area that doesn't have much documentation, we encourage you to add it! If you are unsure about your changes or would like feedback before editing the wiki, feel free to open an issue to discuss it.
-
 
 ## Reporting issues
 
@@ -24,22 +20,28 @@ When [creating a new issue](https://github.com/rollerderby/scoreboard/issues/new
 
 ## Contributing to testing
 
-
 ## Contributing code
 
 Code changes can be contributed by opening a pull request.
 
+### AI Usage Guidelines
+
+Contributions that were made with the assistance of AI tools are welcome, with the following requirements:
+
+- Pull requests must include a brief description of what the AI did (for example, drafting code, writing tests, or reviewing changes) and what you verified yourself.
+- Commits that used AI assistance must include a trailer that identifies the AI tool and model used, such as `Assisted-by` or `Co-authored-by`. For example:
+
+  ```
+  Assisted-by: <tool>:<model>
+  ```
 
 ### Pull request guidelines
 
-
 ### Development process
-
 
 ### Development environment
 
 For suggestions on setting up a development environment, see [our developer guide](https://github.com/rollerderby/scoreboard/wiki/Developer-Guide).
-
 
 ## Contributing technical documentation
 
