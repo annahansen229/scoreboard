@@ -324,6 +324,18 @@
           <option sbForeach="OfficialPosition" sbAttr="value: Id" sbProp="textContent: Name, CurrentOfficialName: pltToOfficialOptionLabel"></option>
         </select>
       </div>
+      <div class="sbGroup sbStack OfficialPosition" sbContext="^^^" sbCall="pltAssignTemporaryCaller">
+        <span>Temporary Assignment</span>
+        <select class="TemporaryOfficialPosition">
+          <option value=""></option>
+          <option sbForeach="OfficialPosition" sbAttr="value: Id" sbDisplay="Name"></option>
+        </select>
+        <select class="TemporaryOfficial">
+          <option value=""></option>
+          <option sbForeach="Ref" sbAttr="value: Id" sbDisplay="Name"></option>
+          <option sbForeach="Nso" sbAttr="value: Id" sbDisplay="Name"></option>
+        </select>
+      </div>
     </div>
   </div>
 

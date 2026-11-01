@@ -389,6 +389,29 @@ function pltToggleCallingPosition(k, v, elem, event) {
   return WS.state[k] === position ? null : position;
 }
 
+function pltAssignTemporaryCaller(k, v, elem, event) {
+  // Only handle clicks directly on this div, not on its children
+  if (event && event.target !== elem[0]) {
+    return;
+  }
+
+  const selects = elem.find('select');
+  const positionId = selects.eq(0).val();
+  const officialId = selects.eq(1).val();
+
+  // Recording an empty position is not allowed
+  if (!positionId) {
+    return;
+  }
+
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  WS.Set(penaltyPath + '.CallingPosition', positionId);
+  
+  // CallingOfficial is written second to overwrite the implicit assignment of 
+  // CallingPosition.CurrentOfficial in PenaltyImpl
+  WS.Set(penaltyPath + '.CallingOfficial', officialId || null);
+}
+
 function _pltPenaltyPathFromElem(elem) {
   return elem.closest('#PenaltyEditor').attr('sbContext').replace(/^\//, '');
 }
