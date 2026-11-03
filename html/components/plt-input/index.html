@@ -306,8 +306,7 @@
         sbContext="^^^"
         sbForeach="OfficialPosition:IPRR,IPRF,JR1,JR2,OPRF,OPRM,OPRR,PLT1,PLT2,PBM: only"
         sbClass="HasOfficial: CurrentOfficial: sbIsNotEmpty | sbActive: p.CallingPosition: == k.Game + '_' + elem.attr('OfficialPosition')"
-        sbSet="p.CallingPosition: pltToggleCallingPosition"
-        sbCall="pltCloseDialogOnPositionSelection"
+        sbCall="pltToggleCallingPosition"
       >
         <span sbDisplay="Name"></span>
         <span class="OnNoEdit" sbDisplay="CurrentOfficialName"></span>

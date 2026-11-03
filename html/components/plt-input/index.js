@@ -372,26 +372,40 @@ function pltToggleReassign(k, v, elem) {
 function pltToOfficialOptionLabel(k) {
   const positionPath = k.substring(0, k.lastIndexOf('.'));
   const positionName = WS.state[positionPath + '.Name'];
-  const officialName = WS.state[positionPath + '.CurrentOfficialName'];
-  if (positionName && officialName) {
-    return positionName + ': ' + officialName;
+  const currentOfficialName = WS.state[positionPath + '.CurrentOfficialName'];
+  if (positionName && currentOfficialName) {
+    return positionName + ': ' + currentOfficialName;
   }
-  return positionName || officialName || '';
+  return positionName || currentOfficialName || '';
 }
 
 function pltToggleCallingPosition(k, v, elem, event) {
-  // Ignore clicks inside .OnEdit (propagated from position editing controls) and keep the current value
+  // Ignore clicks inside .OnEdit (propagated from position editing controls)
   if (event && $(event.target).closest('.OnEdit').length) {
-    return WS.state[k];
+    return;
   }
 
-  const position = k.Game + '_' + elem.attr('OfficialPosition');
-  return WS.state[k] === position ? null : position;
+  const code = elem.attr('OfficialPosition');
+  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  const position = k.Game + '_' + code;
+
+  if (WS.state[penaltyPath + '.CallingPosition'] === position) {
+    // clears the assignment when one was already set
+    WS.Set(penaltyPath + '.CallingPosition', null);
+    WS.Set(penaltyPath + '.CallingOfficial', null);
+  } else {
+    // sets the assignment
+    const official = WS.state['ScoreBoard.Game(' + k.Game + ').OfficialPosition(' + code + ').CurrentOfficial'] || null;
+    WS.Set(penaltyPath + '.CallingPosition', position);
+    WS.Set(penaltyPath + '.CallingOfficial', official);
+  }
+
+  pltCloseDialogOnPositionSelection(k, v, elem, event);
 }
 
 function pltAssignTemporaryCaller(k, v, elem, event) {
-  // Only handle clicks directly on this div, not on its children
-  if (event && event.target !== elem[0]) {
+  // Ignore clicks on the select controls inside this div
+  if (event && $(event.target).closest('select').length) {
     return;
   }
 
