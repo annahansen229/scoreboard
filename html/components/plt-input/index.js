@@ -364,11 +364,22 @@ function pltToExpCodeDisplay(k, v, elem) {
   return pltToPenaltyCodeDisplay(k, v, elem, ' (EXP)');
 }
 
+function pltCloseDialogOnPenaltySelection(k, v, elem, event) {
+  // close the dialog on selection if:
+  //  Called By Tracking is disabled, or
+  //  the CallingPosition has also been set
+  const penaltyPath = _penaltyPathFromElem(elem);
+  if (!$('body').is('[calledBy]') || WS.state[penaltyPath + '.CallingPosition']) {
+    sbCloseDialog(k, v, elem, event);
+  }
+}
+
 //###################################################################
 //
-//  Penalty Editor - Optional "Called By" features
+//  Called By Editor
 //
 //###################################################################
+const DEFAULT_CALLED_BY_POSITIONS = ["IPRF", "IPRR", "JR1", "JR2", "OPRF", "OPRM", "OPRR", "PLT1", "PLT2", "PBM"]
 
 function pltToggleReassign(k, v, elem) {
   // toggles the ability to edit the officials assigned to the positions of the default positions
@@ -376,88 +387,82 @@ function pltToggleReassign(k, v, elem) {
   elem.toggleClass('sbActive', elem.closest('.CalledBy').hasClass('Reassign'));
 }
 
-function pltGetOtherOfficialOptionText(k) {
-  // generates the Position: Official labels for the 'Other' select control
-  const positionPath = k.substring(0, k.lastIndexOf('.'));
-  const positionName = WS.state[positionPath + '.Name'];
-  const currentOfficialName = WS.state[positionPath + '.CurrentOfficialName'];
-  if (positionName && currentOfficialName) {
-    return positionName + ': ' + currentOfficialName;
-  }
-  return positionName || currentOfficialName || '';
-}
-
-function _pltAssignCaller(penaltyPath, callingPosition, callingOfficial) {
+function _assignCaller(penaltyPath, callingPosition, callingOfficial) {
   WS.Set(penaltyPath + '.CallingPosition', callingPosition);
   WS.Set(penaltyPath + '.CallingOfficial', callingOfficial);
 }
 
-function _pltGetPositionShortNameFromPositionID(officialPositionID) {
+function _getPositionShortNameFromPositionID(officialPositionID) {
   // extracts the short name (such as IPRR) from the officialPositionID
   return officialPositionID ? officialPositionID.split('_').pop() : '';
 }
 
-function _pltGetOfficialIDFromOfficialPositionShortName(game, positionShortName) {
+function _getOfficialIDFromOfficialPositionShortName(game, positionShortName) {
   // looks up the ID of the Official currently assigned to the OfficialPosition
   return WS.state['ScoreBoard.Game(' + game + ').OfficialPosition(' + positionShortName + ').CurrentOfficial'] || null;
-}
-
-function isDefaultOfficialPositionSelected (k, v, elem) {
-  const divPositionShortName = elem.attr('OfficialPosition');
-  const divPositionID = k.Game + '_' + divPositionShortName;
-  const divOfficialID = _pltGetOfficialIDFromOfficialPositionShortName(k.Game, divPositionShortName)
-
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  
-  const callingPositionID = WS.state[penaltyPath + '.CallingPosition']
-  const callingOfficialID = WS.state[penaltyPath + '.CallingOfficial']
-
-  return (divPositionID == callingPositionID) && (divOfficialID == callingOfficialID)
 }
 
 function _callingOfficialIsAssignedToCallingPosition (game, penaltyPath) {
   const callingPositionID = WS.state[penaltyPath + '.CallingPosition']
   const callingOfficialID = WS.state[penaltyPath + '.CallingOfficial']
-
-  const callingPositionShortName = _pltGetPositionShortNameFromPositionID(callingPositionID)
-  const assignedOfficialID = _pltGetOfficialIDFromOfficialPositionShortName(game, callingPositionShortName)
-
-  return callingPositionID ? assignedOfficialID == callingOfficialID : false;
+  const callingPositionShortName = _getPositionShortNameFromPositionID(callingPositionID)
+  const officialAssignedToPositionID = _getOfficialIDFromOfficialPositionShortName(game, callingPositionShortName) || null
+  return Boolean(callingPositionID) && officialAssignedToPositionID == callingOfficialID
 }
 
-function getOtherOfficialPositionInitialValue (k, v, elem) {
-  // Other select value is the current CallingPosition when the CallingOffical matches the CurrentOfficial of the CallingPosition
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  const callingPositionID = WS.state[penaltyPath + '.CallingPosition']
-  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? callingPositionID : ""
+function _penaltyPathFromElem(elem) {
+  // navigates the context heirarchy to get the Penalty context
+  return elem.closest('#PenaltyEditor').attr('sbContext').replace(/^\//, '');
 }
 
-function isOtherOfficialPositionActive (k, v, elem) {
-  // Other section is active when a CallingPosition is assigned, and the CallingOfficial matches the CurrentOfficial of the CallingPosition
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  const callingPositionID = WS.state[penaltyPath + '.CallingPosition']
-  return callingPositionID ? _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) : false
+function _closeDialogOnPositionSelection(k, v, elem, event) {
+  // Ignore clicks inside .OnEdit (propagated from position editing controls) and keep the current value
+  if (event && $(event.target).closest('.OnEdit').length) {
+    return;
+  }
+  
+  // close the dialog if the penalty code has also been assigned
+  const penaltyPath = _penaltyPathFromElem(elem);
+  if (WS.state[penaltyPath + '.Code']) {
+    sbCloseDialog(k, v, elem, event);
+  }
 }
 
-function getTemporaryAssignmentOfficialPositionInitialValue(k, v, elem) {
-  // Temporary OfficialPosition select value is the current CallingPosition when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  const callingPositionID = WS.state[penaltyPath + '.CallingPosition'] || ""
-  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingPositionID
+function pltToCalledByDisplay(k) {
+  // generates the Position: Name label for the read-only "Called By" field
+  const penaltyPath = k.upTo('Penalty');
+  const gamePath = k.upTo('Game');
+
+  const positionShortName = _getPositionShortNameFromPositionID(WS.state[penaltyPath + '.CallingPosition']);
+  const positionName = positionShortName ? WS.state[gamePath + '.OfficialPosition(' + positionShortName + ').Name'] : '';
+
+  const officialId = WS.state[penaltyPath + '.CallingOfficial'];
+  const officialName = officialId
+    ? WS.state[gamePath + '.Nso(' + officialId + ').Name'] || WS.state[gamePath + '.Ref(' + officialId + ').Name']
+    : '';
+
+  if (positionName && officialName) {
+    return positionName + ' : ' + officialName;
+  }
+  return positionName || officialName || '';
 }
 
-function getTemporaryAssignmentOfficialInitialValue(k, v, elem) {
-  // Temporary Official select value is the current CallingOffical when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  const callingOfficialID = WS.state[penaltyPath + '.CallingOfficial'] || ""
-  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingOfficialID
-}
+//###################################################################
+// Default OfficialPositions 
+//###################################################################
+function pltIsDefaultOfficialPositionActive (k, v, elem) {
+  // Default section is active when:
+  //  the CallingPosition is one of the default positions, and  
+  //  the CallingOfficial matches the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
 
-function isTemporaryAssignmentActive (k, v, elem) {
-  // Temporary Assignment section is active when a CallingPosition is assigned, and the CallingOfficial does not match the CurrentOfficial of the CallingPosition
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  const callingPositionID = WS.state[penaltyPath + '.CallingPosition'] || ""
-  return callingPositionID ? !_callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) : false
+  const divPositionShortName = elem.attr('OfficialPosition');
+  const divPositionID = k.Game + '_' + divPositionShortName;
+  const divPositionIsDefaultPosition = DEFAULT_CALLED_BY_POSITIONS.includes(divPositionShortName)
+  
+  const divIDMatchesCallingPositionID = divPositionID == WS.state[penaltyPath + '.CallingPosition']
+
+  return divPositionIsDefaultPosition && divIDMatchesCallingPositionID && _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath)
 }
 
 function pltToggleDefaultOfficialPosition(k, v, elem, event) {
@@ -471,20 +476,71 @@ function pltToggleDefaultOfficialPosition(k, v, elem, event) {
   }
 
   const positionShortName = elem.attr('OfficialPosition');
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
+  const penaltyPath = _penaltyPathFromElem(elem);
   const callingPositionID = k.Game + '_' + positionShortName;
-  const callingOfficialID = _pltGetOfficialIDFromOfficialPositionShortName(k.Game, positionShortName);
+  const callingOfficialID = _getOfficialIDFromOfficialPositionShortName(k.Game, positionShortName);
 
   if (elem.hasClass('sbActive')) {
-    _pltAssignCaller(penaltyPath, null, null);
+    _assignCaller(penaltyPath, null, null);
   } else {
-    _pltAssignCaller(penaltyPath, callingPositionID, callingOfficialID);
+    _assignCaller(penaltyPath, callingPositionID, callingOfficialID);
   }
 
-  pltCloseDialogOnPositionSelection(k, v, elem, event);
+  _closeDialogOnPositionSelection(k, v, elem, event);
 }
 
-function pltToggleOtherOfficialPosition(k, v, elem, event) {
+//###################################################################
+// Other OfficialPositions 
+//###################################################################
+function pltGetOtherOfficialOptionText(k) {
+  // generates the Position: Official labels for the 'Other' select control
+  const positionPath = k.substring(0, k.lastIndexOf('.'));
+  const positionName = WS.state[positionPath + '.Name'];
+  const currentOfficialName = WS.state[positionPath + '.CurrentOfficialName'];
+  if (positionName && currentOfficialName) {
+    return positionName + ': ' + currentOfficialName;
+  }
+  return positionName || currentOfficialName || '';
+}
+
+function pltIsOtherOfficialPositionOptionSelectedInitialValue(k, v, elem) {
+  // option is selected when:
+  //  it's value matches the CallingPosition, and
+  //  the CallingOfficial matches the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
+  const thisOptionValue = elem.attr('value')
+  const callingPositionID = WS.state[penaltyPath + '.CallingPosition']
+  return (thisOptionValue == callingPositionID) && _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath)
+}
+
+function isOtherOfficialPositionActive (k, v, elem) {
+  // Other section is active when:
+  //  the CallingPosition is not one of the default positions, and 
+  //  the CallingOfficial matches the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
+  const callingOfficialIsAssignedtoCallingPosition = _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath)
+  const callingPositionIsDefaultPosition = DEFAULT_CALLED_BY_POSITIONS.includes(_getPositionShortNameFromPositionID(WS.state[penaltyPath + '.CallingPosition']))
+  return !callingPositionIsDefaultPosition && callingOfficialIsAssignedtoCallingPosition
+}
+
+function pltSelectOtherOfficialPosition(k, callingPositionID, elem, event) {
+  // handles a selection change in the Other input
+  // an empty selection clears the assignment
+  // a non-empty selection sets the assignment
+  const penaltyPath = _penaltyPathFromElem(elem);
+
+  if (!callingPositionID) {
+    _assignCaller(penaltyPath, null, null)
+  } else {
+    const positionShortName = _getPositionShortNameFromPositionID(callingPositionID) 
+    const callingOfficialID = _getOfficialIDFromOfficialPositionShortName(k.Game, positionShortName)
+    _assignCaller(penaltyPath, callingPositionID, callingOfficialID)
+  }
+
+  _closeDialogOnPositionSelection(k, callingPositionID, elem, event);
+}
+
+function pltClearOtherOfficialPosition(k, v, elem, event) {
   // Handles a click in the Other section
   // When the div has class sbActive, it clears the assignment.
   // Otherwise the click is ignored
@@ -495,25 +551,33 @@ function pltToggleOtherOfficialPosition(k, v, elem, event) {
   }
 
   if (elem.hasClass('sbActive')) {
-    _pltAssignCaller(_pltPenaltyPathFromElem(elem), null, null);
+    _assignCaller(_penaltyPathFromElem(elem), null, null);
+    _closeDialogOnPositionSelection(k, v, elem, event);
   }
 }
 
-function pltSelectOtherOfficialPosition(k, callingPositionID, elem, event) {
-  // handles a selection change in the Other input
-  // an empty selection clears the assignment
-  // a non-empty selection sets the assignment
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
+//###################################################################
+// Temporary OfficialPosition + Official Assignment
+//###################################################################
+function pltGetTemporaryAssignmentOfficialPositionInitialValue(k, v, elem) {
+  // Temporary OfficialPosition select value is the current CallingPosition when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
+  const callingPositionID = WS.state[penaltyPath + '.CallingPosition'] || ""
+  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingPositionID
+}
 
-  if (!callingPositionID) {
-    _pltAssignCaller(penaltyPath, null, null)
-  } else {
-    const positionShortName = _pltGetPositionShortNameFromPositionID(callingPositionID) 
-    const callingOfficialID = _pltGetOfficialIDFromOfficialPositionShortName(k.Game, positionShortName)
-    _pltAssignCaller(penaltyPath, callingPositionID, callingOfficialID)
-  }
+function pltGetTemporaryAssignmentOfficialInitialValue(k, v, elem) {
+  // Temporary Official select value is the current CallingOffical when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
+  const callingOfficialID = WS.state[penaltyPath + '.CallingOfficial'] || ""
+  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingOfficialID
+}
 
-  pltCloseDialogOnPositionSelection(k, callingPositionID, elem, event);
+function pltIsTemporaryAssignmentActive (k, v, elem) {
+  // Temporary Assignment section is active when a CallingPosition is assigned, and the CallingOfficial does not match the CurrentOfficial of the CallingPosition
+  const penaltyPath = _penaltyPathFromElem(elem);
+  const callingPositionID = WS.state[penaltyPath + '.CallingPosition'] || ""
+  return callingPositionID ? !_callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) : false
 }
 
 function pltAssignTemporaryCaller(k, v, elem, event) {
@@ -531,54 +595,15 @@ function pltAssignTemporaryCaller(k, v, elem, event) {
     return;
   }
   
-  _pltAssignCaller(_pltPenaltyPathFromElem(elem), callingPositionID, callingOfficialID)
-  pltCloseDialogOnPositionSelection(k, v, elem, event);
+  _assignCaller(_penaltyPathFromElem(elem), callingPositionID, callingOfficialID)
+  _closeDialogOnPositionSelection(k, v, elem, event);
 }
 
 function pltClearTemporaryCaller(k, v, elem, event) {
-  _pltAssignCaller(_pltPenaltyPathFromElem(elem), null, null)
+  _assignCaller(_penaltyPathFromElem(elem), null, null)
 }
 
-function _pltPenaltyPathFromElem(elem) {
-  return elem.closest('#PenaltyEditor').attr('sbContext').replace(/^\//, '');
-}
 
-function pltCloseDialogOnPenaltySelection(k, v, elem, event) {
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  if (!$('body').is('[calledBy]') || WS.state[penaltyPath + '.CallingPosition']) {
-    sbCloseDialog(k, v, elem, event);
-  }
-}
-
-function pltCloseDialogOnPositionSelection(k, v, elem, event) {
-  // Ignore clicks inside .OnEdit (propagated from position editing controls) and keep the current value
-  if (event && $(event.target).closest('.OnEdit').length) {
-    return;
-  }
-  
-  const penaltyPath = _pltPenaltyPathFromElem(elem);
-  if (WS.state[penaltyPath + '.Code']) {
-    sbCloseDialog(k, v, elem, event);
-  }
-}
-
-function pltToCalledByDisplay(k) {
-  const penaltyPath = k.upTo('Penalty');
-  const gamePath = k.upTo('Game');
-
-  const positionID = WS.state[penaltyPath + '.CallingPosition'];
-  const positionShortName = _pltGetPositionShortNameFromPositionID(positionID)
-  const positionName = positionShortName ? WS.state[gamePath + '.OfficialPosition(' + positionShortName + ').Name'] : '';
-
-  const officialId = WS.state[penaltyPath + '.CallingOfficial'];
-  const officialName = officialId
-    ? WS.state[gamePath + '.Nso(' + officialId + ').Name'] || WS.state[gamePath + '.Ref(' + officialId + ').Name']
-    : '';
-  if (positionName && officialName) {
-    return positionName + ' : ' + officialName;
-  }
-  return positionName || officialName || '';
-}
 
 
 //###################################################################
