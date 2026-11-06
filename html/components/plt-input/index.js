@@ -559,18 +559,25 @@ function pltClearOtherOfficialPosition(k, v, elem, event) {
 //###################################################################
 // Temporary OfficialPosition + Official Assignment
 //###################################################################
-function pltGetTemporaryAssignmentOfficialPositionInitialValue(k, v, elem) {
-  // Temporary OfficialPosition select value is the current CallingPosition when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
+
+function pltIsTemporaryOfficialPositionSelectedInitialValue(k, v, elem) {
+  // option is selected when:
+  //  it's value matches the CallingPosition,
+  //  and the CallingOfficial does not match the CallingPosition.CurrentOfficial
   const penaltyPath = _penaltyPathFromElem(elem);
+  const thisOptionValue = elem.attr('value')
   const callingPositionID = WS.state[penaltyPath + '.CallingPosition'] || ""
-  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingPositionID
+  return (thisOptionValue == callingPositionID) && !_callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath)
 }
 
-function pltGetTemporaryAssignmentOfficialInitialValue(k, v, elem) {
-  // Temporary Official select value is the current CallingOffical when the CallingOfficial does not match the CurrentOfficial of the CallingPosition
+function pltIsTemporaryOfficialSelectedInitialValue(k, v, elem) {
+  // option is selected when:
+  //  it's value matches the CallingOfficial, and
+  //  it does not match the CallingPosition.CurrentOfficial
   const penaltyPath = _penaltyPathFromElem(elem);
+  const thisOptionValue = elem.attr('value')
   const callingOfficialID = WS.state[penaltyPath + '.CallingOfficial'] || ""
-  return _callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) ? "" : callingOfficialID
+  return (thisOptionValue == callingOfficialID) && !_callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath)
 }
 
 function pltIsTemporaryAssignmentActive (k, v, elem) {
@@ -580,31 +587,33 @@ function pltIsTemporaryAssignmentActive (k, v, elem) {
   return callingPositionID ? !_callingOfficialIsAssignedToCallingPosition(k.Game, penaltyPath) : false
 }
 
-function pltAssignTemporaryCaller(k, v, elem, event) {
+function pltToggleTemporaryAssignment(k, v, elem, event) {
   // Ignore clicks on the select controls inside this div
   if (event && $(event.target).closest('select').length) {
     return;
   }
 
-  const selects = elem.find('select');
-  const callingPositionID = selects.eq(0).val();
-  const callingOfficialID = selects.eq(1).val() || null;
-  
-  // Recording an empty position is not allowed
-  if (!callingPositionID) {
-    return;
+  const selects = elem.find('select')
+
+  const selectedCallingPositionID = selects.eq(0).val();
+  const selectedCallingOfficialID = selects.eq(1).val();
+
+  const penaltyPath = _penaltyPathFromElem(elem);
+
+  if (elem.hasClass('sbActive')) {
+      _assignCaller(penaltyPath, null, null);
+  } else {
+
+    // Recording an empty position is not allowed
+    if (!selectedCallingPositionID) {
+      return;
+    }
+
+    _assignCaller(penaltyPath, selectedCallingPositionID, selectedCallingOfficialID);
   }
-  
-  _assignCaller(_penaltyPathFromElem(elem), callingPositionID, callingOfficialID)
+
   _closeDialogOnPositionSelection(k, v, elem, event);
 }
-
-function pltClearTemporaryCaller(k, v, elem, event) {
-  _assignCaller(_penaltyPathFromElem(elem), null, null)
-}
-
-
-
 
 //###################################################################
 //

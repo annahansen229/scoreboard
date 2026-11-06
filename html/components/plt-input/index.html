@@ -327,19 +327,22 @@
           </option>
         </select>
       </div>
-      <div class="sbGroup sbStack OfficialPosition" sbContext="^^^" sbClass="sbActive: p.CallingPosition, p.CallingOfficial: pltIsTemporaryAssignmentActive">
+      <div 
+        class="sbGroup sbStack OfficialPosition" 
+        sbContext="^^^" 
+        sbClass="sbActive: p.CallingPosition, p.CallingOfficial: pltIsTemporaryAssignmentActive"
+        sbCall="pltToggleTemporaryAssignment"
+      >
         <span>Temporary Assignment</span>
-        <select sbProp="value: p.CallingPosition, p.CallingOfficial: pltGetTemporaryAssignmentOfficialPositionInitialValue">
+        <select>
           <option value=""></option>
-          <option sbForeach="OfficialPosition" sbAttr="value: Id" sbDisplay="Name"></option>
+          <option sbForeach="OfficialPosition" sbAttr="value: Id" sbDisplay="Name" sbProp="selected: p.CallingPosition, p.CallingOfficial: pltIsTemporaryOfficialPositionSelectedInitialValue"></option>
         </select>
-        <select sbProp="value: p.CallingPosition, p.CallingOfficial: pltGetTemporaryAssignmentOfficialInitialValue">
+        <select>
           <option value=""></option>
-          <option sbForeach="Ref" sbAttr="value: Id" sbDisplay="Name"></option>
-          <option sbForeach="Nso" sbAttr="value: Id" sbDisplay="Name"></option>
+          <option sbForeach="Ref" sbAttr="value: Id" sbDisplay="Name" sbProp="selected: p.CallingPosition, p.CallingOfficial: pltIsTemporaryOfficialSelectedInitialValue"></option>
+          <option sbForeach="Nso" sbAttr="value: Id" sbDisplay="Name" sbProp="selected: p.CallingPosition, p.CallingOfficial: pltIsTemporaryOfficialSelectedInitialValue"></option>
         </select>
-        <button class="AssignTemporary" sbClass="sbHide: #TODO" sbCall="pltAssignTemporaryCaller">Assign</button>
-        <button class="ClearTemporary" sbClass="sbHide: #TODO" sbCall="pltClearTemporaryCaller">Clear</button>
       </div>
     </div>
   </div>
