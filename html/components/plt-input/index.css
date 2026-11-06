@@ -93,8 +93,10 @@ body:not([calledBy]) .CalledBy { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .Filter { display: none; }
 #PenaltyEditor .CalledBy.Reassign .OnNoEdit { display: none; }
 #PenaltyEditor .CalledBy:not(.Reassign) .OfficialPosition .OnEdit { display: none; }
+#PenaltyEditor .CalledBy select { width: 95%; }
+
 body[calledBy] .CalledByReadOnly { display: none; }
-/* match spacing/alignment with Comment display */
+/* match spacing/alignment with Annotation display */
 #PenaltyEditor .CalledByReadOnly .CalledByText {
   display: inline-block;
   box-sizing: border-box;
@@ -105,5 +107,6 @@ body[calledBy] .CalledByReadOnly { display: none; }
   white-space: nowrap;
   overflow: hidden;
 }
+
 
 #AnnotationEditor .sbGroup { flex-wrap: wrap; gap: 0.5em; }
